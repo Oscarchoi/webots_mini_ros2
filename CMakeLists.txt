@@ -21,6 +21,7 @@ find_library(WEBOTS_CONTROLLER_LIB CppController ${WEBOTS_HOME}/lib/controller)
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 
 add_executable(webots_node src/webots_node.cc)
 
@@ -30,6 +31,7 @@ target_link_libraries(webots_node ${WEBOTS_CONTROLLER_LIB})
 ament_target_dependencies(webots_node
   rclcpp
   geometry_msgs
+  nav_msgs
 )
 
 install(TARGETS
