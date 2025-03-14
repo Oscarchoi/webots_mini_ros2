@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<robot name="Epuck Webots">
+    <webots>
+        <plugin type="webots_ros2_control::Ros2Control" />
+    </webots>
+    <!-- Base Link -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <cylinder radius="0.045" length="0.08" />
+            </geometry>
+            <material name="blue">
+                <color rgba="0 0 1 1" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="0.045" length="0.08" />
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0.5" />
+            <origin xyz="0 0 0" />
+            <inertia ixx="0.001" iyy="0.001" izz="0.001" ixy="0.0" ixz="0.0" iyz="0.0" />
+        </inertial>
+    </link>
+
+    <!-- Left Wheel -->
+    <link name="left_wheel">
+        <visual>
+            <geometry>
+                <cylinder radius="0.025" length="0.01" />
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1" />
+            </material>
+        </visual>
+    </link>
+
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="left_wheel" />
+        <origin xyz="0 0.045 0.025" />
+        <axis xyz="0 1 0" />
+    </joint>
+
+    <transmission name="left_wheel_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="left_wheel_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="left_wheel_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+
+    <!-- Right Wheel -->
+    <link name="right_wheel">
+        <visual>
+            <geometry>
+                <cylinder radius="0.025" length="0.01" />
+            </geometry>
+            <material name="red">
+                <color rgba="1 0 0 1" />
+            </material>
+        </visual>
+    </link>
+
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="right_wheel" />
+        <origin xyz="0 -0.045 0.025" />
+        <axis xyz="0 1 0" />
+    </joint>
+
+    <transmission name="right_wheel_transmission">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="right_wheel_joint">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_wheel_motor">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+
+    <!-- Distance Sensors -->
+    <link name="ds0">
+        <visual>
+            <geometry>
+                <cylinder radius="0.008" length="0.004" />
+            </geometry>
+            <material name="yellow">
+                <color rgba="1 1 0 1" />
+            </material>
+        </visual>
+    </link>
+
+    <joint name="ds0_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="ds0" />
+        <origin xyz="0.042 0.02 0.063" rpy="0 0 0.5236" />
+    </joint>
+
+    <gazebo>
+        <sensor type="ray" name="ds0">
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>2</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.5</min_angle>
+                        <max_angle>0.5</max_angle>
+                    </horizontal>
+                </scan>
+                <range>
+                    <min>0.05</min>
+                    <max>0.15</max>
+                    <resolution>0.001</resolution>
+                </range>
+            </ray>
+            <plugin name="ds0_plugin" filename="libgazebo_ros_ray_sensor.so" />
+        </sensor>
+    </gazebo>
+
+
+    <ros2_control name="WebotsControl" type="system">
+        <hardware>
+            <plugin>webots_ros2_control::Ros2ControlSystem</plugin>
+        </hardware>
+        <joint name="right wheel motor">
+            <state_interface name="position" />
+            <command_interface name="velocity" />
+        </joint>
+        <joint name="left wheel motor">
+            <state_interface name="position" />
+            <command_interface name="velocity" />
+        </joint>
+    </ros2_control>
+</robot>
